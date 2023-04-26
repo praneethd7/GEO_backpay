@@ -11,8 +11,8 @@ prev_gross1 = 0
 prev_gross2 = 0
 gross_fall = 0 
 gross_spring = 0
-percent_fall = 0
-percent_spring = 0
+percent_fall = -1
+percent_spring = -1
 
 st.session_state.show = False
 # st.session_state.pay = None
@@ -24,13 +24,13 @@ def backpay(gross_fall,gross_spring,prev_gross,reappointed_fall,reappointed_spri
     monthly_22 = minimum_yearly_wage_22/9
     minimum_yearly_wage_23 = 22080
     monthly_23 = minimum_yearly_wage_23/9
-    prev_gross_norm = prev_gross*prev_percent/50
+    prev_gross_norm = prev_gross*50/prev_percent
     if prev_gross == 0:
         prev_gross_norm = 0.1
-    gross_fall_norm = gross_fall*percent_fall/50
-    gross_spring_norm = gross_spring*percent_spring/50
-    reapp_fall = 1 + max(1.06-gross_fall_norm/prev_gross_norm,0.06)
-    reapp_spring = 1 + max(1.06-gross_spring_norm/prev_gross_norm,0.06)
+    gross_fall_norm = gross_fall*50/percent_fall
+    gross_spring_norm = gross_spring*50/percent_spring
+    reapp_fall = 1 + max(1.06-gross_fall_norm/prev_gross_norm,0)
+    reapp_spring = 1 + max(1.06-gross_spring_norm/prev_gross_norm,0)
     fall_pay = 0
     if reappointed_fall == 'Yes':
         fall_pay = max(prev_gross_norm*reapp_fall,monthly_22)
@@ -57,7 +57,7 @@ def backpay(gross_fall,gross_spring,prev_gross,reappointed_fall,reappointed_spri
 
 def calculate_backpay():
     prev_gross = 0
-    prev_percent = 0
+    prev_percent = -1
     if prev_gross1 != 0:
         prev_gross = prev_gross1
         prev_percent = prev_percent1
@@ -65,8 +65,13 @@ def calculate_backpay():
         prev_gross = prev_gross2
         prev_percent = prev_percent2
     print(prev_gross, " :: " ,prev_percent)
+    print(gross_fall,gross_spring,prev_gross,reappointed_fall,reappointed_spring,percent_fall,percent_spring,prev_percent)
     may_pay,backpay_calc = backpay(gross_fall,gross_spring,prev_gross,reappointed_fall,reappointed_spring,percent_fall,percent_spring,prev_percent)
     print(may_pay, " :: " ,backpay_calc)
+    if gross_spring == 0:
+        st.error('This is an error')
+        st.warning('You entered no pay for Spring 2023', icon="⚠️")
+        return 0,0
     if may_pay == 0:
         st.warning('You entered no pay! Time to join UIUC', icon="⚠️")
         return None, None
@@ -86,13 +91,13 @@ with col1:
         if reappointed_fall == 'Yes': 
             st.write('Enter details for Reappointment')
             prev_gross1 = st.number_input("Please enter your Gross Wage for the last appointment you held prior to Fall 2022:", min_value=0, max_value=10000)
-            prev_percent1 =  st.select_slider("Please enter your Total Appointment Percentage(%) for the last appointment you held prior to Fall 2022:",  options=(0,12.5,25,50,66.7))
+            prev_percent1 =  st.select_slider("Please enter your Total Appointment Percentage(%) for the last appointment you held prior to Fall 2022:",  options=(12.5,25,50,66.7))
         
         reappointed_spring = st.radio('Were you reappointed for Spring 2023?',options=("No", "Yes"))
         if reappointed_spring == 'Yes': 
             st.write('Enter details for Reappointment')
             prev_gross2 = st.number_input("Please enter your Gross Wage for the last appointment you held prior to Spring 2023:", min_value=0, max_value=10000, key = 'gross_pay')
-            prev_percent2 =  st.select_slider("Please enter your Total Appointment Percentage(%) for the last appointment you held prior to Spring 2023:",  options=(0,12.5,25,50,66.7), key = 'gross_per')
+            prev_percent2 =  st.select_slider("Please enter your Total Appointment Percentage(%) for the last appointment you held prior to Spring 2023:",  options=(12.5,25,50,66.7), key = 'gross_per')
         
         with col2:
             st.header("STEP 2:")
@@ -101,7 +106,7 @@ with col1:
             if fall == 'Yes':
                 gross_fall = st.number_input("Please input your monthly gross pay for Fall 2022", min_value=0, max_value=10000)
                 fall_postions = st.multiselect("Please select all positions you held during Fall 2022", options =("TA","RA","GA","PGA"))
-                percent_fall = st.select_slider("Total appointment percentage(%) in Fall 2022",  options=(0,12.5,25,50,66.7))
+                percent_fall = st.select_slider("Total appointment percentage(%) in Fall 2022",  options=(12.5,25,50,66.7))
                 # percent_RA_fall = st.select_slider("RA percentage(%) in Fall 2022",  options=(0,25,50,67.5))
 
             st.subheader('Spring 2023 Details')
@@ -109,10 +114,10 @@ with col1:
             if spring == 'Yes':
                 gross_spring = st.number_input("Please input your monthly gross pay for Spring 2023", min_value=0, max_value=10000)
                 fall_postions = st.multiselect("Please select all positions you held during Spring 2023", options =("TA","RA","GA","PGA"))
-                percent_spring= st.select_slider("Total appointment percentage(%) in Spring 2023",  options=(0,12.5,25,50,66.7))
+                percent_spring= st.select_slider("Total appointment percentage(%) in Spring 2023",  options=(12.5,25,50,66.7))
             agree2 = st.checkbox("I entered all details accurately to the best of my knowledge. \
                                  I understand that GEO can only legally pursue cases affecting members of the bargaining unit, \
-                                 which consists of all graduate students who hold a total Teaching Assistant (TA) and/or Graduate Assistant (GA) position\
+                                 which consists of all graduate students who hold a Teaching Assistant (TA) and/or Graduate Assistant (GA) position\
                                  with a total TA+GA appointment between 0.25 and 0.67 full-time equivalent (FTE), except for TAs in their first semester \
                                  teaching in the following departments: Animal Biology; Biochemistry; Cell and Structural Biology; Chemistry; \
                                  Germanic Languages & Literature; Microbiology; Plant Biology; and Psychology.")
