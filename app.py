@@ -122,5 +122,3 @@ with col1:
                     st.button("Calculate My Pay", on_click = show_pay)
                     if "may_pay" in st.session_state:
                         st.metric("Estimated May 2023 Pay Check and Back Pay", st.session_state.may_pay , st.session_state.backpay)
-
-
