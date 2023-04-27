@@ -58,10 +58,10 @@ def backpay(gross_fall,gross_spring,prev_gross,reappointed_fall,reappointed_spri
 def calculate_backpay():
     prev_gross = 0
     prev_percent = -1
-    if prev_gross1 != 0:
+    if prev_gross1 != 0: # If they had an appointment BEFORE fall 2022 AND an appointment IN fall 2022
         prev_gross = prev_gross1
         prev_percent = prev_percent1
-    if prev_gross2 != 0:
+    else: # If they did not have an appointment BEFORE fall 2022, OR if they had one before fall 2022 BUT NOT IN fall 2022
         prev_gross = prev_gross2
         prev_percent = prev_percent2
     print(prev_gross, " :: " ,prev_percent)
