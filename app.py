@@ -54,9 +54,9 @@ def calculate_pay(
     wage_with_reappointment_raise = prev_wage * 1.06
 
     fall_wage_adj = max(fall_wage, wage_with_reappointment_raise, new_minimum_2022_2023) if reappointed_fall else max(
-        fall_wage, new_minimum_2022_2023)
+        fall_wage, new_minimum_2022_2023) if fall_wage > 0 else 0
     spring_wage_adj = max(spring_wage, wage_with_reappointment_raise, new_minimum_2022_2023) if reappointed_spring else max(
-        spring_wage, new_minimum_2022_2023)
+        spring_wage, new_minimum_2022_2023) if spring_wage > 0 else 0 
 
     # Backpay
 
@@ -64,56 +64,13 @@ def calculate_pay(
     spring_backpay = 4.48 * (spring_wage_adj - spring_wage) * (spring_app_pct / 50.) * (spring_wage > 0)
     backpay_total = fall_backpay + spring_backpay
     may_paycheck = spring_wage * (spring_app_pct / 50.) + backpay_total
-    september_wage = max(spring_wage_adj * (1. + 0.06 * reappointed_sep23), new_minimum_2023_2024) * float(sept23_pct) / 50.
-
+    print("Fall wage adj", fall_wage_adj)
+    print(reappointed_sep23)
+    print(spring_wage_adj)
+    print((spring_wage_adj if spring_wage_adj > 0 else fall_wage_adj) * (1. + 0.06 * reappointed_sep23))
+    september_wage = max((spring_wage_adj if spring_wage_adj > 0 else fall_wage_adj) * (1. + 0.06 * reappointed_sep23), new_minimum_2023_2024) * float(sept23_pct) / 50.
+    print(september_wage)
     return may_paycheck, backpay_total, september_wage
-
-def backpay(gross_fall,gross_spring,prev_gross,reappointed_fall,reappointed_spring,percent_fall,percent_spring,prev_percent,sept_percent =None,year =22,position_fall = None,position_spring = None):
-    #if reappointment is for any assistantship
-    #if reappointment is for any assistantship
-    minimum_yearly_wage_22 = 21230.0
-    monthly_22 = minimum_yearly_wage_22/9.0
-    minimum_yearly_wage_23 = 22080.0
-    monthly_23 = minimum_yearly_wage_23/9.0
-    prev_gross_norm = prev_gross*50.0/prev_percent
-    if prev_gross == 0:
-        prev_gross_norm = 0.1
-    gross_fall_norm = gross_fall*50.0/percent_fall
-    gross_spring_norm = gross_spring*50.0/percent_spring
-    reapp_fall = 1.0 + max(1.06-gross_fall_norm/prev_gross_norm,0)
-    reapp_spring = 1.0 + max(1.06-gross_spring_norm/prev_gross_norm,0)
-    print("Prev gross norm : ", prev_gross_norm)
-    print("reapp_fall : ", reapp_fall)
-    print("reapp_spring : ", reapp_spring)
-    ## Fall backpayment
-    if reappointed_fall == 'Yes':
-        fall_pay = max(gross_fall_norm*reapp_fall,monthly_22)
-    elif reappointed_fall == 'No':
-        fall_pay = max(gross_fall_norm,monthly_22)
-    else:
-        fall_pay = 0
-    if gross_fall == 0:
-        fall_pay = 0
-    fall_backpay = max(4.52*(fall_pay - gross_fall_norm),0)
-    
-    ## Spring backpayment
-    if reappointed_spring == 'Yes':
-        spring_pay = max(gross_spring_norm*reapp_spring,monthly_22)
-    elif reappointed_spring == 'No':
-        spring_pay = max(gross_spring_norm,monthly_22)
-    else:
-        spring_pay = 0    
-    if gross_spring == 0:
-        spring_pay = 0
-    spring_backpay = max(4.48*(spring_pay - gross_spring_norm),0)
-    
-    if year == 22: #may paycheck
-        backpay_calc = +  fall_backpay*percent_fall/50.0 + spring_backpay*percent_spring/50.0
-        may_paycheck = gross_spring  + backpay_calc
-        return round(may_paycheck,2), round(backpay_calc,2)
-    if year == 23: #september
-        september_paycheck = max(fall_pay,spring_pay,monthly_23)*sept_percent/50.0
-        return round(september_paycheck,2)
 
 def calculate_backpay(year, sept_percent = 50.0):
     prev_gross = 0
@@ -155,7 +112,7 @@ def calculate_backpay(year, sept_percent = 50.0):
         new_minimum_2023_2024=NEW_MINIMUM_2023_2024
     )
     
-    print(may_pay, " :: " ,backpay_calc)
+    print(may_pay, " :: " ,backpay_calc, " ::" , sep_pay)
     # if gross_spring == 0:
     #     st.error('This is an error')
     #     st.warning('You entered no pay for Spring 2023', icon="⚠️")
@@ -163,7 +120,7 @@ def calculate_backpay(year, sept_percent = 50.0):
     
     if may_pay == 0:
         st.warning('You are already making above minimum and have no reappointment for this year', icon="⚠️")
-        return 0, 0 , 0
+        return 0, 0 , round(sep_pay,2)
     else:
         return round(may_pay,2), round(backpay_calc,2) , round(sep_pay,2)
 
