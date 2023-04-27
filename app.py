@@ -5,6 +5,12 @@ import numpy as np
 
 st.set_page_config(layout="wide")
 st.title('GEO Backpay/Wage Calculator')
+agree1 = st.checkbox("I understand that GEO can only legally pursue cases affecting members of the bargaining unit, \
+                            which consists of all graduate students who hold a Teaching Assistant (TA) and/or Graduate Assistant (GA) position\
+                            with a total TA+GA appointment between 0.25 and 0.67 full-time equivalent (FTE), except for TAs in their first semester \
+                            teaching in the following departments: Animal Biology; Biochemistry; Cell and Structural Biology; Chemistry; \
+                            Germanic Languages & Literature; Microbiology; Plant Biology; and Psychology.")
+
 value = None
 col1, col2, col3 = st.columns(3)
 prev_gross1 = 0
@@ -133,56 +139,52 @@ def show_pay_sep():
     
 with col1:
     st.header("STEP 1:")
-    st.subheader('Reappointment Information')
-    st.write('A reappointment is holding any assistantship in the last three years before Fall 2022')
-    agree = st.checkbox("I understand the definition of reappointment")
-    if agree:
-        reappointed_fall = st.radio('Were you reappointed for Fall 2022?',options=("No", "Yes"))
-        if reappointed_fall == 'Yes': 
-            st.write('Enter details for Reappointment')
-            prev_gross1 = st.number_input("Please enter your Gross Wage for the last appointment you held prior to Fall 2022:", min_value=0.0, max_value=10000.00,step=0.000001)
-            prev_percent1 =  st.select_slider("Please enter your Total Appointment Percentage(%) for the last appointment you held prior to Fall 2022:",  options=(12.5,25.0, 33.0, 50.0,66.7))
-        
-        reappointed_spring = st.radio('Were you reappointed for Spring 2023?',options=("No", "Yes"))
-        if reappointed_spring == 'Yes': 
-            st.write('Enter details for Reappointment')
-            prev_gross2 = st.number_input("Please enter your Gross Wage for the last appointment you held prior to Spring 2023:", min_value=0.0, max_value=10000.00,step=0.000001, key = 'gross_pay')
-            prev_percent2 =  st.select_slider("Please enter your Total Appointment Percentage(%) for the last appointment you held prior to Spring 2023:",  options=(12.5,25.0, 33.0, 50.0,66.7), key = 'gross_per')
-        
+    if agree1:
+        st.subheader('Fall 2022 Details')
+        fall = st.radio('Were you appointed during Fall 2022?',options=("No", "Yes"))
+        if fall == 'Yes':
+            gross_fall = st.number_input("Please input your monthly gross pay for Fall 2022", min_value=0.0, max_value=10000.00,step=0.000001)
+            fall_postions = st.multiselect("Please select all positions you held during Fall 2022", options =("TA","GA","RA","PGA", "Fellow/Other"))
+            percent_fall = st.select_slider("Total appointment percentage(%) in Fall 2022",  options=(12.5,25.0, 33.0, 50.0,66.7))
+            # percent_RA_fall = st.select_slider("RA percentage(%) in Fall 2022",  options=(0,25,50,67.5))
+
+        st.subheader('Spring 2023 Details')
+        spring = st.radio('Were you appointed during Spring 2023?',options=("No", "Yes"))
+        if spring == 'Yes':
+            gross_spring = st.number_input("Please input your monthly gross pay for Spring 2023", min_value=0.0, max_value=10000.00,step=0.000001)
+            fall_postions = st.multiselect("Please select all positions you held during Spring 2023", options =("TA","GA","RA","PGA", "Fellow/Other"))
+            percent_spring= st.select_slider("Total appointment percentage(%) in Spring 2023",  options=(12.5,25.0, 33.0, 50.0,66.7))
+
         with col2:
             st.header("STEP 2:")
-            st.subheader('Fall 2022 Details')
-            fall = st.radio('Were you appointed during Fall 2022?',options=("No", "Yes"))
-            if fall == 'Yes':
-                gross_fall = st.number_input("Please input your monthly gross pay for Fall 2022", min_value=0.0, max_value=10000.00,step=0.000001)
-                fall_postions = st.multiselect("Please select all positions you held during Fall 2022", options =("TA","GA","RA","PGA", "Fellow/Other"))
-                percent_fall = st.select_slider("Total appointment percentage(%) in Fall 2022",  options=(12.5,25.0, 33.0, 50.0,66.7))
-                # percent_RA_fall = st.select_slider("RA percentage(%) in Fall 2022",  options=(0,25,50,67.5))
-
-            st.subheader('Spring 2023 Details')
-            spring = st.radio('Were you appointed during Spring 2023?',options=("No", "Yes"))
-            if spring == 'Yes':
-                gross_spring = st.number_input("Please input your monthly gross pay for Spring 2023", min_value=0.0, max_value=10000.00,step=0.000001)
-                fall_postions = st.multiselect("Please select all positions you held during Spring 2023", options =("TA","GA","RA","PGA", "Fellow/Other"))
-                percent_spring= st.select_slider("Total appointment percentage(%) in Spring 2023",  options=(12.5,25.0, 33.0, 50.0,66.7))
-            agree2 = st.checkbox("I entered all details accurately to the best of my knowledge. \
-                                 I understand that GEO can only legally pursue cases affecting members of the bargaining unit, \
-                                 which consists of all graduate students who hold a Teaching Assistant (TA) and/or Graduate Assistant (GA) position\
-                                 with a total TA+GA appointment between 0.25 and 0.67 full-time equivalent (FTE), except for TAs in their first semester \
-                                 teaching in the following departments: Animal Biology; Biochemistry; Cell and Structural Biology; Chemistry; \
-                                 Germanic Languages & Literature; Microbiology; Plant Biology; and Psychology.")
-            if agree2:
-                with col3:
-                    st.header("STEP 3:")
-                    st.button("Calculate My May Pay", on_click = show_pay_may)
-                    if "may_pay" in st.session_state:
-                        st.metric("Estimated May 2023 Pay Check and Back Pay", st.session_state.may_pay , st.session_state.backpay)
-                    reappointed_sept = st.radio('Will you have an appointment for Sept 2023?',options=("No", "Yes"))
-                    if reappointed_sept == "Yes":
-                        sept_percent = st.select_slider("Please enter your Total Appointment Percentage(%) for Fall 2023:",  options=(12.5,25.0, 33.0, 50.0,66.7))
-                        st.button("Calculate My September Pay", on_click = show_pay_sep)
-                        if "sep_pay" in st.session_state:
-                            st.metric("Estimated September 2023 Pay Check: ", st.session_state.sep_pay)
-                        st.write("Disclaimer: Your actual monthly pay for Fall 2023 could be higher if your department chooses to increase your monthly pay beyond the minimum as stipulated by the contract.")    
-                            
-                        
+            st.subheader('Reappointment Information')
+            st.write('A reappointment is holding any assistantship in the last three years before Fall 2022')
+            agree = st.checkbox("I understand the definition of reappointment")
+            if agree:
+                reappointed_fall = st.radio('Were you reappointed for Fall 2022?',options=("No", "Yes"))
+                if reappointed_fall == 'Yes': 
+                    st.write('Enter details for Reappointment')
+                    prev_gross1 = st.number_input("Please enter your Gross Wage for the last appointment you held prior to Fall 2022:", min_value=0.0, max_value=10000.00,step=0.000001)
+                    prev_percent1 =  st.select_slider("Please enter your Total Appointment Percentage(%) for the last appointment you held prior to Fall 2022:",  options=(12.5,25.0, 33.0, 50.0,66.7))
+                
+                reappointed_spring = st.radio('Were you reappointed for Spring 2023?',options=("No", "Yes"))
+                if reappointed_spring == 'Yes': 
+                    st.write('Enter details for Reappointment')
+                    prev_gross2 = st.number_input("Please enter your Gross Wage for the last appointment you held prior to Spring 2023:", min_value=0.0, max_value=10000.00,step=0.000001, key = 'gross_pay')
+                    prev_percent2 =  st.select_slider("Please enter your Total Appointment Percentage(%) for the last appointment you held prior to Spring 2023:",  options=(12.5,25.0, 33.0, 50.0,66.7), key = 'gross_per')
+                agree2 = st.checkbox("I entered all details accurately to the best of my knowledge.")
+                if agree2:
+                    with col3:
+                        st.header("STEP 3:")
+                        st.button("Calculate My May Pay", on_click = show_pay_may)
+                        if "may_pay" in st.session_state:
+                            st.metric("Estimated May 2023 Pay Check and Back Pay", st.session_state.may_pay , st.session_state.backpay)
+                        reappointed_sept = st.radio('Will you have an appointment for Sept 2023?',options=("No", "Yes"))
+                        if reappointed_sept == "Yes":
+                            sept_percent = st.select_slider("Please enter your Total Appointment Percentage(%) for Fall 2023:",  options=(12.5,25.0, 33.0, 50.0,66.7))
+                            st.button("Calculate My September Pay", on_click = show_pay_sep)
+                            if "sep_pay" in st.session_state:
+                                st.metric("Estimated September 2023 Pay Check: ", st.session_state.sep_pay)
+                            st.write("Disclaimer: Your actual monthly pay for Fall 2023 could be higher if your department chooses to increase your monthly pay beyond the minimum as stipulated by the contract.")    
+                                        
+                                    
