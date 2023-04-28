@@ -166,12 +166,13 @@ with col1:
                     st.write('Enter details for Reappointment')
                     prev_gross1 = st.number_input("Please enter your Gross Wage for the last appointment you held prior to Fall 2022:", min_value=0.0, max_value=10000.00,step=0.000001)
                     prev_percent1 =  st.select_slider("Please enter your Total Appointment Percentage(%) for the last appointment you held prior to Fall 2022:",  options=(12.5,25.0, 33.0, 50.0,66.7))
-                
-                reappointed_spring = st.radio('Were you reappointed for Spring 2023?',options=("No", "Yes"))
-                if reappointed_spring == 'Yes': 
-                    st.write('Enter details for Reappointment')
-                    prev_gross2 = st.number_input("Please enter your Gross Wage for the last appointment you held prior to Spring 2023:", min_value=0.0, max_value=10000.00,step=0.000001, key = 'gross_pay')
-                    prev_percent2 =  st.select_slider("Please enter your Total Appointment Percentage(%) for the last appointment you held prior to Spring 2023:",  options=(12.5,25.0, 33.0, 50.0,66.7), key = 'gross_per')
+                    reappointed_spring = spring
+                elif reappointed_fall == 'No':
+                    reappointed_spring = st.radio('Were you reappointed for Spring 2023?',options=("No", "Yes"))
+                    if reappointed_spring == 'Yes':
+                        st.write('Enter details for Reappointment')
+                        prev_gross2 = st.number_input("Please enter your Gross Wage for the last appointment you held prior to Spring 2023:", min_value=0.0, max_value=10000.00,step=0.000001, key = 'gross_pay')
+                        prev_percent2 =  st.select_slider("Please enter your Total Appointment Percentage(%) for the last appointment you held prior to Spring 2023:",  options=(12.5,25.0, 33.0, 50.0,66.7), key = 'gross_per')
                 agree2 = st.checkbox("I entered all details accurately to the best of my knowledge.")
                 if agree2:
                     with col3:
