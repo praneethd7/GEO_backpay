@@ -139,6 +139,7 @@ def show_pay_sep():
     
 with col1:
     st.header("STEP 1:")
+    st.write(r'\* Your Gross Monthly Wage is the current "Taxable Gross" entry on your earnings statement, found here: https://www.hr.uillinois.edu/pay/earnstmt')
     if agree1:
         st.subheader('Fall 2022 Details')
         fall = st.radio('Were you appointed during Fall 2022?',options=("No", "Yes"))
@@ -154,7 +155,7 @@ with col1:
             gross_spring = st.number_input("Please input your Gross Monthly Wage* for Spring 2023", min_value=0.0, max_value=10000.00,step=0.000001)
             fall_postions = st.multiselect("Please select all positions you held during Spring 2023", options =("TA","GA","RA","PGA", "Fellow/Other"))
             percent_spring= st.select_slider("Total appointment percentage(%) in Spring 2023",  options=(12.5,25.0, 33.0, 50.0,66.7))
-        st.write(r'\* Your Gross Monthly Wage is the current "Taxable Gross" entry on your earnings statement, found here: https://www.hr.uillinois.edu/pay/earnstmt')
+        
         with col2:
             st.header("STEP 2:")
             st.subheader('Reappointment Information')
