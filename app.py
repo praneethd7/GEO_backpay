@@ -88,13 +88,13 @@ def calculate_backpay(year, sept_percent = 50.0):
         else:
             st.error('This is an error')
             st.warning("You didn't enter pay for reappointment before Fall 2022", icon="⚠️")
-    elif reappointed_spring == 'Yes':
-        if prev_gross2 != 0:
-            prev_gross = prev_gross2
-            prev_percent = prev_percent2
-        else:
-            st.error('This is an error')
-            st.warning("You didn't enter pay for reappointment before Spring 2023", icon="⚠️")
+    # elif reappointed_spring == 'Yes':
+    #     if prev_gross2 != 0:
+    #         prev_gross = prev_gross2
+    #         prev_percent = prev_percent2
+    #     else:
+    #         st.error('This is an error')
+    #         st.warning("You didn't enter pay for reappointment before Spring 2023", icon="⚠️")
 
     print(prev_gross, " :: " ,prev_percent)
     print(prev_gross,gross_fall,gross_spring,prev_percent,percent_fall,percent_spring,reappointed_fall,reappointed_spring,reappointed_sept, sept_percent)
@@ -139,6 +139,7 @@ def show_pay_sep():
     
 with col1:
     st.header("STEP 1:")
+    st.write(r'\* Your Gross Monthly Wage is the current "Taxable Gross" entry on your earnings statement, found here: https://www.hr.uillinois.edu/pay/earnstmt')
     if agree1:
         st.subheader('Fall 2022 Details')
         fall = st.radio('Were you appointed during Fall 2022?',options=("No", "Yes"))
