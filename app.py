@@ -146,15 +146,15 @@ with col1:
         if fall == 'Yes':
             gross_fall = st.number_input("Please input your Gross Monthly Wage* for Fall 2022", min_value=0.0, max_value=10000.00,step=0.000001)
             fall_postions = st.multiselect("Please select all positions you held during Fall 2022", options =("TA", "GA", "RA","PGA", "Fellow/Other"))
-            percent_fall = st.select_slider("Total appointment percentage(%) in Fall 2022",  options=(12.5,25.0, 33.0, 40.0, 50.0,66.7))
-            # percent_RA_fall = st.select_slider("RA percentage(%) in Fall 2022",  options=(0,25,50,67.5))
+            percent_fall = st.slider("Total appointment percentage(%) in Fall 2022", min_value = 10.0 , max_value = 66.7, value = 50.0 , step = 0.5)
+            # percent_RA_fall = st.slider("RA percentage(%) in Fall 2022",  options=(0,25,50,67.5))
 
         st.subheader('Spring 2023 Details')
         spring = st.radio('Were you appointed during Spring 2023?',options=("No", "Yes"))
         if spring == 'Yes':
             gross_spring = st.number_input("Please input your Gross Monthly Wage* for Spring 2023", min_value=0.0, max_value=10000.00,step=0.000001)
             fall_postions = st.multiselect("Please select all positions you held during Spring 2023", options =("TA","GA","RA","PGA", "Fellow/Other"))
-            percent_spring= st.select_slider("Total appointment percentage(%) in Spring 2023",  options=(12.5,25.0, 33.0, 40.0, 50.0,66.7))
+            percent_spring= st.slider("Total appointment percentage(%) in Spring 2023", min_value = 10.0 , max_value = 66.7, value = 50.0 , step = 0.5)
         st.write(r'\* Your Gross Monthly Wage is the current "Taxable Gross" entry on your earnings statement, found here: https://www.hr.uillinois.edu/pay/earnstmt')
         with col2:
             st.header("STEP 2:")
@@ -167,7 +167,7 @@ with col1:
                     if reappointed_fall == 'Yes' and fall == 'Yes':
                         st.write('Enter details for Reappointment')
                         prev_gross1 = st.number_input("Please enter your Gross Monthly Wage* for the last appointment you held prior to Fall 2022:", min_value=0.0, max_value=10000.00,step=0.000001)
-                        prev_percent1 =  st.select_slider("Please enter your Total Appointment Percentage (%) for the last appointment you held prior to Fall 2022:",  options=(12.5,25.0, 33.0, 40.0, 50.0,66.7))
+                        prev_percent1 =  st.slider("Please enter your Total Appointment Percentage (%) for the last appointment you held prior to Fall 2022:", min_value = 10.0 , max_value = 66.7, value = 50.0 , step = 0.5)
                         reappointed_spring = spring
                     elif reappointed_fall == 'No' and spring == 'Yes':
                         if fall == 'No':
@@ -175,7 +175,7 @@ with col1:
                             if reappointed_spring == 'Yes':
                                 st.write('Enter details for Reappointment')
                                 prev_gross2 = st.number_input("Please enter your Gross Monthly Wage* for the last appointment you held prior to Spring 2023:", min_value=0.0, max_value=10000.00,step=0.000001, key = 'gross_pay')
-                                prev_percent2 =  st.select_slider("Please enter your Total Appointment Percentage (%) for the last appointment you held prior to Spring 2023:",  options=(12.5,25.0, 33.0, 40.0, 50.0,66.7), key = 'gross_per')
+                                prev_percent2 =  st.slider("Please enter your Total Appointment Percentage (%) for the last appointment you held prior to Spring 2023:", min_value = 10.0 , max_value = 66.7, value = 50.0 , step = 0.5, key = 'gross_per')
                         else:
                             reappointed_spring = 'Yes'
                             prev_gross1 = prev_gross2 = gross_fall
@@ -190,9 +190,9 @@ with col1:
                         prev_gross2 = st.number_input(
                             "Please enter your Gross Monthly Wage* for the last appointment you held prior to Spring 2023:",
                             min_value=0.0, max_value=10000.00, step=0.000001, key='gross_pay')
-                        prev_percent2 = st.select_slider(
+                        prev_percent2 = st.slider(
                             "Please enter your Total Appointment Percentage (%) for the last appointment you held prior to Spring 2023:",
-                            options=(12.5, 25.0, 33.0, 40.0, 50.0, 66.7), key='gross_per')
+                           min_value = 10.0 , max_value = 66.7, value = 50.0 , step = 0.5, key='gross_per')
                 else:
                     reappointed_spring = reappointed_fall = 'No'
                 agree2 = st.checkbox("I entered all details accurately to the best of my knowledge.")
@@ -204,7 +204,7 @@ with col1:
                             st.metric("Estimated May 2023 Pay Check and Back Pay", st.session_state.may_pay , st.session_state.backpay)
                         reappointed_sept = st.radio('Will you have an appointment for Sept 2023?',options=("No", "Yes"))
                         if reappointed_sept == "Yes":
-                            sept_percent = st.select_slider("Please enter your Total Appointment Percentage(%) for Fall 2023:",  options=(12.5,25.0, 33.0, 40.0, 50.0,66.7))
+                            sept_percent = st.slider("Please enter your Total Appointment Percentage(%) for Fall 2023:", min_value = 10.0 , max_value = 66.7, value = 50.0 , step = 0.5)
                             st.button("Calculate My September Pay", on_click = show_pay_sep)
                             if "sep_pay" in st.session_state:
                                 st.metric("Estimated September 2023 Pay Check: ", st.session_state.sep_pay)
