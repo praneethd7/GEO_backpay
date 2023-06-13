@@ -170,16 +170,16 @@ with col1:
                         prev_percent1 =  st.slider("Please enter your Total Appointment Percentage (%) for the last appointment you held prior to Fall 2022:", min_value = 10.0 , max_value = 66.7, value = 50.0 , step = 0.5)
                         reappointed_spring = spring
                     elif reappointed_fall == 'No' and spring == 'Yes':
-                        if fall == 'No':
-                            reappointed_spring = st.radio('Were you reappointed for Spring 2023?',options=("No", "Yes"))
-                            if reappointed_spring == 'Yes':
-                                st.write('Enter details for Reappointment')
-                                prev_gross2 = st.number_input("Please enter your Taxable Gross Monthly Wage* for the last appointment you held prior to Spring 2023:", min_value=0.0, max_value=10000.00,step=0.000001, key = 'gross_pay')
-                                prev_percent2 =  st.slider("Please enter your Total Appointment Percentage (%) for the last appointment you held prior to Spring 2023:", min_value = 10.0 , max_value = 66.7, value = 50.0 , step = 0.5, key = 'gross_per')
-                        else:
-                            reappointed_spring = 'Yes'
-                            prev_gross1 = prev_gross2 = gross_fall
-                            prev_percent1 = prev_percent2 = percent_fall
+                        # if fall == 'No':
+                        reappointed_spring = st.radio('Were you reappointed for Spring 2023?',options=("No", "Yes"))
+                        if reappointed_spring == 'Yes':
+                            st.write('Enter details for Reappointment')
+                            prev_gross2 = st.number_input("Please enter your Taxable Gross Monthly Wage* for the last appointment you held prior to Spring 2023:", min_value=0.0, max_value=10000.00,step=0.000001, key = 'gross_pay')
+                            prev_percent2 =  st.slider("Please enter your Total Appointment Percentage (%) for the last appointment you held prior to Spring 2023:", min_value = 10.0 , max_value = 66.7, value = 50.0 , step = 0.5, key = 'gross_per')
+                        # else:
+                        #     reappointed_spring = 'Yes'
+                        #     prev_gross1 = prev_gross2 = gross_fall
+                        #     prev_percent1 = prev_percent2 = percent_fall
                     else:
                         reappointed_spring = fall
                 elif spring == 'Yes':
